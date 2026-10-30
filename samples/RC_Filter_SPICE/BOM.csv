@@ -1,0 +1,4 @@
+﻿Reference,Value,Symbol,Footprint,Part Number
+J1,5V_IN,Connector:Conn_01x02_Pin,,
+R1,10kΩ,Device:R,Resistor_SMD:R_0603_1608Metric,
+C1,100nF,Device:C,Capacitor_SMD:C_0603_1608Metric,

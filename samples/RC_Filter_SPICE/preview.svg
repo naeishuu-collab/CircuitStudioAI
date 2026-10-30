@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="840" height="340" viewBox="0 0 840 340">
+<rect width="100%" height="100%" fill="#101821"/>
+<text x="24" y="30" fill="#f2f4f7" font-family="sans-serif" font-size="18">CircuitStudio AI — structural preview</text>
+<rect x="95" y="76" width="70" height="48" rx="5" fill="#192b39" stroke="#71d6c5"/>
+<text x="130" y="96" fill="#f2f4f7" text-anchor="middle" font-family="sans-serif" font-size="13">J1</text>
+<text x="130" y="113" fill="#a9bac8" text-anchor="middle" font-family="sans-serif" font-size="11">5V_IN</text>
+<circle cx="95" cy="100" r="3" fill="#f2f4f7"/>
+<path d="M 95 100 H 83" stroke="#71d6c5" fill="none" stroke-width="2"/>
+<text x="81" y="96" fill="#71d6c5" text-anchor="end" font-family="sans-serif" font-size="10">VCC</text>
+<circle cx="165" cy="100" r="3" fill="#f2f4f7"/>
+<path d="M 165 100 H 177" stroke="#71d6c5" fill="none" stroke-width="2"/>
+<text x="179" y="96" fill="#71d6c5" text-anchor="start" font-family="sans-serif" font-size="10">GND</text>
+<rect x="350" y="76" width="70" height="48" rx="5" fill="#192b39" stroke="#71d6c5"/>
+<text x="385" y="96" fill="#f2f4f7" text-anchor="middle" font-family="sans-serif" font-size="13">R1</text>
+<text x="385" y="113" fill="#a9bac8" text-anchor="middle" font-family="sans-serif" font-size="11">10kΩ</text>
+<circle cx="350" cy="100" r="3" fill="#f2f4f7"/>
+<path d="M 350 100 H 338" stroke="#71d6c5" fill="none" stroke-width="2"/>
+<text x="336" y="96" fill="#71d6c5" text-anchor="end" font-family="sans-serif" font-size="10">VCC</text>
+<circle cx="420" cy="100" r="3" fill="#f2f4f7"/>
+<path d="M 420 100 H 432" stroke="#71d6c5" fill="none" stroke-width="2"/>
+<text x="434" y="96" fill="#71d6c5" text-anchor="start" font-family="sans-serif" font-size="10">RC_OUT</text>
+<rect x="605" y="76" width="70" height="48" rx="5" fill="#192b39" stroke="#71d6c5"/>
+<text x="640" y="96" fill="#f2f4f7" text-anchor="middle" font-family="sans-serif" font-size="13">C1</text>
+<text x="640" y="113" fill="#a9bac8" text-anchor="middle" font-family="sans-serif" font-size="11">100nF</text>
+<circle cx="605" cy="100" r="3" fill="#f2f4f7"/>
+<path d="M 605 100 H 593" stroke="#71d6c5" fill="none" stroke-width="2"/>
+<text x="591" y="96" fill="#71d6c5" text-anchor="end" font-family="sans-serif" font-size="10">RC_OUT</text>
+<circle cx="675" cy="100" r="3" fill="#f2f4f7"/>
+<path d="M 675 100 H 687" stroke="#71d6c5" fill="none" stroke-width="2"/>
+<text x="689" y="96" fill="#71d6c5" text-anchor="start" font-family="sans-serif" font-size="10">GND</text>
+<text x="24" y="322" fill="#f4c16e" font-family="sans-serif" font-size="12">Preview is structural only; KiCad ERC/DRC and electrical safety are separate checks.</text></svg>

@@ -1,0 +1,56 @@
+{
+  "status": "ROUTED",
+  "manufacturing_status": "NOT_PROVEN",
+  "file": "C:\\Users\\yingz\\OneDrive\\Desktop\\eishu\\cadai\\reports\\kicad10-validation\\repaired-led-sample-2\\LED_Indicator\\LED_Indicator.kicad_pcb",
+  "pcbnew_version": "10.0.7",
+  "design_conditions": {
+    "layers": 2,
+    "board_thickness_mm": 1.6,
+    "outline": {
+      "width_mm": 90,
+      "height_mm": 60,
+      "origin_x_mm": 10,
+      "origin_y_mm": 10
+    },
+    "constraints": {
+      "clearance_mm": 0.25,
+      "trace_width_mm": 0.5,
+      "copper_oz": 1,
+      "temperature_rise_C": 10
+    }
+  },
+  "footprints": 3,
+  "routes": 8,
+  "unrouted_nets": [],
+  "native_drc": {
+    "status": "PASS",
+    "returncode": 0,
+    "command": [
+      "C:\\Program Files\\KiCad\\10.0\\bin\\kicad-cli.exe",
+      "pcb",
+      "drc",
+      "--format",
+      "json",
+      "--output",
+      "C:\\Users\\yingz\\AppData\\Local\\Temp\\circuitstudio-ory0n4bi\\report.json",
+      "--severity-all",
+      "C:\\Users\\yingz\\AppData\\Local\\Temp\\circuitstudio-ory0n4bi\\LED_Indicator.kicad_pcb"
+    ],
+    "stdout": "0 個の違反を検出しました\r\n0 個の未配線アイテムを検出しました\r\nC:/Users/yingz/AppData/Local/Temp/circuitstudio-ory0n4bi/report.json にDRC レポートを保存\r\n",
+    "stderr": "",
+    "report": "{\n    \"$schema\": \"https://schemas.kicad.org/drc.v1.json\",\n    \"coordinate_units\": \"mm\",\n    \"date\": \"2026-10-30T22:42:46\",\n    \"ignored_checks\": [\n        {\n            \"description\": \"Footprint has no courtyard defined\",\n            \"key\": \"missing_courtyard\"\n        },\n        {\n            \"description\": \"Track endpoint not centered on via\",\n            \"key\": \"track_not_centered_on_via\"\n        },\n        {\n            \"description\": \"Tuning profile track geometries\",\n            \"key\": \"tuning_profile_track_geometries\"\n        },\n        {\n            \"description\": \"Footprint doesn't match symbol's footprint filters\",\n            \"key\": \"footprint_filters_mismatch\"\n        },\n        {\n            \"description\": \"Footprint component type doesn't match footprint pads\",\n            \"key\": \"footprint_type_mismatch\"\n        }\n    ],\n    \"included_severities\": [\n        \"error\",\n        \"warning\",\n        \"exclusion\"\n    ],\n    \"kicad_version\": \"10.0.7\",\n    \"schematic_parity\": [],\n    \"source\": \"LED_Indicator.kicad_pcb\",\n    \"unconnected_items\": [],\n    \"violations\": []\n}\n",
+    "report_path": null,
+    "violation_counts": {
+      "error": 0,
+      "warning": 0,
+      "exclusion": 0
+    },
+    "violation_total": 0,
+    "report_error": null,
+    "artifact_created": true
+  },
+  "trace_capacity": {
+    "status": "NOT_EXECUTED",
+    "reason": "配線幅だけでは電流容量を評価できません。銅厚、電流、温度条件、層構成と放熱条件が必要です。"
+  }
+}

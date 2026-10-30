@@ -1,0 +1,194 @@
+{
+  "schema_version": 2,
+  "metadata": {
+    "author": "CircuitStudio AI sample",
+    "revision": "2.0",
+    "description": "Native symbol and footprint mapping example"
+  },
+  "project": {
+    "name": "LED_Indicator",
+    "description": "5V LED circuit with a two-pin input connector"
+  },
+  "design": {
+    "intent": "5V入力から抵抗を介してLEDを点灯する。電流は約5mA。",
+    "architecture": "indicator",
+    "parameters": {
+      "operating_current_A": "5mA"
+    },
+    "unknowns": [
+      "LEDの型番と実際の順方向電圧は未確定"
+    ],
+    "constraints": {
+      "supply_voltage_V": "5V"
+    },
+    "pcb_constraints": {
+      "signal_trace_min_mm": 0.25
+    },
+    "datasheets": [],
+    "rules": [
+      "LEDの順方向電圧と抵抗定格を実部品データシートで確認する"
+    ]
+  },
+  "power_rails": [
+    {
+      "net": "VCC",
+      "nominal_voltage_V": "5V",
+      "min_voltage_V": "4.75V",
+      "max_voltage_V": "5.25V",
+      "current_limit_A": "20mA"
+    }
+  ],
+  "safety_notes": [
+    "これは説明用の低電圧サンプルであり、実装前に実部品の定格を照合する。"
+  ],
+  "pcb": {
+    "layers": 2,
+    "outline": {
+      "width_mm": 90,
+      "height_mm": 60,
+      "origin_x_mm": 10,
+      "origin_y_mm": 10
+    },
+    "constraints": {
+      "clearance_mm": 0.25,
+      "trace_width_mm": 0.5,
+      "copper_oz": 1,
+      "temperature_rise_C": 10
+    },
+    "placements": [
+      {
+        "ref": "J1",
+        "x_mm": 25,
+        "y_mm": 38
+      },
+      {
+        "ref": "R1",
+        "x_mm": 52,
+        "y_mm": 38
+      },
+      {
+        "ref": "D1",
+        "x_mm": 76,
+        "y_mm": 38
+      }
+    ],
+    "routes": [
+      {
+        "net": "VCC",
+        "layer": "F.Cu",
+        "width_mm": 0.5,
+        "points": [
+          {
+            "x_mm": 25,
+            "y_mm": 38
+          },
+          {
+            "x_mm": 52,
+            "y_mm": 38
+          }
+        ]
+      },
+      {
+        "net": "LED_A",
+        "layer": "F.Cu",
+        "width_mm": 0.5,
+        "points": [
+          {
+            "x_mm": 62.16,
+            "y_mm": 38
+          },
+          {
+            "x_mm": 72,
+            "y_mm": 38
+          },
+          {
+            "x_mm": 72,
+            "y_mm": 34
+          },
+          {
+            "x_mm": 78.54,
+            "y_mm": 34
+          },
+          {
+            "x_mm": 78.54,
+            "y_mm": 38
+          }
+        ]
+      },
+      {
+        "net": "GND",
+        "layer": "B.Cu",
+        "width_mm": 0.5,
+        "points": [
+          {
+            "x_mm": 76,
+            "y_mm": 38
+          },
+          {
+            "x_mm": 76,
+            "y_mm": 48
+          },
+          {
+            "x_mm": 25,
+            "y_mm": 48
+          },
+          {
+            "x_mm": 25,
+            "y_mm": 40.54
+          }
+        ]
+      }
+    ],
+    "board_thickness_mm": 1.6
+  },
+  "nets": [
+    {
+      "name": "VCC",
+      "kind": "power",
+      "voltage_V": "5V"
+    },
+    {
+      "name": "LED_A",
+      "kind": "signal"
+    },
+    {
+      "name": "GND",
+      "kind": "ground"
+    }
+  ],
+  "components": [
+    {
+      "ref": "J1",
+      "symbol": "Connector:Conn_01x02_Pin",
+      "value": "5V_IN",
+      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
+      "pins": {
+        "1": "VCC",
+        "2": "GND"
+      }
+    },
+    {
+      "ref": "R1",
+      "symbol": "Device:R",
+      "value": "1kΩ",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "pins": {
+        "1": "VCC",
+        "2": "LED_A"
+      },
+      "ratings": {
+        "power_W": "0.125W"
+      }
+    },
+    {
+      "ref": "D1",
+      "symbol": "Device:LED",
+      "value": "LED_GENERIC",
+      "footprint": "LED_THT:LED_D5.0mm",
+      "pins": {
+        "1": "GND",
+        "2": "LED_A"
+      }
+    }
+  ]
+}

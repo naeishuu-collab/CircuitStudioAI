@@ -1,0 +1,197 @@
+{
+  "project": "RP2040_12V_HBridge",
+  "status": "BLOCKED",
+  "electrical_approval": "NOT_PROVEN",
+  "native_erc": {
+    "status": "NOT_EXECUTED",
+    "reason": "意味解析に失敗したためERCを実行しませんでした。",
+    "command": null
+  },
+  "diagnostics": [
+    {
+      "id": "DESIGN_ASSUMPTION_UNKNOWN",
+      "status": "UNKNOWN",
+      "severity": "warning",
+      "target": [],
+      "evidence": "未確定条件: モーター連続電流",
+      "recommendation": "値を確認してDSLに反映してください。",
+      "method": "ユーザー/データシートによる条件確定"
+    },
+    {
+      "id": "DESIGN_ASSUMPTION_UNKNOWN",
+      "status": "UNKNOWN",
+      "severity": "warning",
+      "target": [],
+      "evidence": "未確定条件: 停止電流",
+      "recommendation": "値を確認してDSLに反映してください。",
+      "method": "ユーザー/データシートによる条件確定"
+    },
+    {
+      "id": "DESIGN_ASSUMPTION_UNKNOWN",
+      "status": "UNKNOWN",
+      "severity": "warning",
+      "target": [],
+      "evidence": "未確定条件: ゲートドライバ型番",
+      "recommendation": "値を確認してDSLに反映してください。",
+      "method": "ユーザー/データシートによる条件確定"
+    },
+    {
+      "id": "DESIGN_ASSUMPTION_UNKNOWN",
+      "status": "UNKNOWN",
+      "severity": "warning",
+      "target": [],
+      "evidence": "未確定条件: MOSFET型番と放熱条件",
+      "recommendation": "値を確認してDSLに反映してください。",
+      "method": "ユーザー/データシートによる条件確定"
+    },
+    {
+      "id": "DESIGN_ASSUMPTION_UNKNOWN",
+      "status": "UNKNOWN",
+      "severity": "warning",
+      "target": [],
+      "evidence": "未確定条件: デッドタイム",
+      "recommendation": "値を確認してDSLに反映してください。",
+      "method": "ユーザー/データシートによる条件確定"
+    },
+    {
+      "id": "DESIGN_ASSUMPTION_UNKNOWN",
+      "status": "UNKNOWN",
+      "severity": "warning",
+      "target": [],
+      "evidence": "未確定条件: 保護方式",
+      "recommendation": "値を確認してDSLに反映してください。",
+      "method": "ユーザー/データシートによる条件確定"
+    },
+    {
+      "id": "DSL_EMPTY_CIRCUIT",
+      "status": "FAIL",
+      "severity": "error",
+      "target": [],
+      "evidence": "components が空です。出力できる回路要素がありません。",
+      "recommendation": "部品と接続を指定してください。安全条件の不足だけなら design.unknowns に残し、実体の推定はしないでください。",
+      "method": "構造解析"
+    },
+    {
+      "id": "POWER_NET_UNUSED",
+      "status": "WARNING",
+      "severity": "warning",
+      "target": [
+        "VM"
+      ],
+      "evidence": "power net 'VM' に接続部品がありません。",
+      "recommendation": "電源/GND接続を確認してください。",
+      "method": "ネットグラフ解析"
+    },
+    {
+      "id": "POWER_NET_UNUSED",
+      "status": "WARNING",
+      "severity": "warning",
+      "target": [
+        "3V3"
+      ],
+      "evidence": "power net '3V3' に接続部品がありません。",
+      "recommendation": "電源/GND接続を確認してください。",
+      "method": "ネットグラフ解析"
+    },
+    {
+      "id": "POWER_NET_UNUSED",
+      "status": "WARNING",
+      "severity": "warning",
+      "target": [
+        "GND"
+      ],
+      "evidence": "ground net 'GND' に接続部品がありません。",
+      "recommendation": "電源/GND接続を確認してください。",
+      "method": "ネットグラフ解析"
+    },
+    {
+      "id": "POWER_GROUND_CONNECTIVITY_UNKNOWN",
+      "status": "UNKNOWN",
+      "severity": "warning",
+      "target": [],
+      "evidence": "電源/GNDのいずれかが部品ピンに接続されていません。",
+      "recommendation": "電源/GNDの端子割当と実際の電流帰路を確認してください。",
+      "method": "ネットグラフの端子数確認"
+    },
+    {
+      "id": "HBRIDGE_OPERATING_DATA",
+      "status": "UNKNOWN",
+      "severity": "critical",
+      "target": [],
+      "evidence": "未確定: モーター連続電流, モーター停止電流。電流定格・発熱・ゲート駆動を判断できません。",
+      "recommendation": "モーターの連続/停止電流、最大電源電圧、実際のゲート駆動条件を測定値またはデータシートで指定してください。",
+      "method": "設計条件と部品データシートの照合"
+    },
+    {
+      "id": "HBRIDGE_SWITCH_COUNT",
+      "status": "FAIL",
+      "severity": "error",
+      "target": [],
+      "evidence": "離散MOSFET構成は4スイッチを想定しますが、検出した個数は0です。",
+      "recommendation": "ブリッジ構成を確認し、各FETの高側/低側と端子割当を明示してください。",
+      "method": "回路構成の個数チェック"
+    },
+    {
+      "id": "HBRIDGE_DEAD_TIME",
+      "status": "UNKNOWN",
+      "severity": "critical",
+      "target": [],
+      "evidence": "デッドタイム条件がありません。上下アーム同時導通の可能性を評価できません。",
+      "recommendation": "ゲートドライバのデータシートとMOSFET切替時間からデッドタイムを設計してください。",
+      "method": "ゲート波形・タイミングの確認"
+    },
+    {
+      "id": "HBRIDGE_OVERCURRENT",
+      "status": "UNKNOWN",
+      "severity": "critical",
+      "target": [],
+      "evidence": "過電流保護が確認できません。停止電流や短絡時の保護を証明できません。",
+      "recommendation": "電流制限/ヒューズと故障時遮断の設計値を追加してください。",
+      "method": "保護回路と停止電流のレビュー"
+    },
+    {
+      "id": "HBRIDGE_HIGH_SIDE_DRIVE",
+      "status": "UNKNOWN",
+      "severity": "critical",
+      "target": [],
+      "evidence": "高側ゲート駆動方式が確定していません。",
+      "recommendation": "ハイサイドのゲート電圧/デューティ条件に対応するドライバを指定してください。",
+      "method": "設計条件/データシート/起動波形のレビュー"
+    },
+    {
+      "id": "HBRIDGE_TRANSIENT_PROTECTION",
+      "status": "UNKNOWN",
+      "severity": "critical",
+      "target": [],
+      "evidence": "誘導性負荷の過渡保護が確認できません。",
+      "recommendation": "循環電流経路、クランプ素子、過渡電圧定格を検証してください。",
+      "method": "設計条件/データシート/起動波形のレビュー"
+    },
+    {
+      "id": "HBRIDGE_RESET_STATE",
+      "status": "UNKNOWN",
+      "severity": "critical",
+      "target": [],
+      "evidence": "起動/リセット時の安全状態が確認できません。",
+      "recommendation": "RP2040起動中の入力状態とゲートの既定オフを回路とファームウェアで確認してください。",
+      "method": "設計条件/データシート/起動波形のレビュー"
+    },
+    {
+      "id": "HBRIDGE_BULK_CAP",
+      "status": "WARNING",
+      "severity": "warning",
+      "target": [],
+      "evidence": "VM-GND間のバルクコンデンサがネット接続から確認できません。",
+      "recommendation": "モーター電源の配線インダクタンス、電流リップル、部品のリップル電流定格に基づいて配置してください。",
+      "method": "ネットグラフ確認。近接配置は未検証"
+    }
+  ],
+  "net_graph": {
+    "VM": [],
+    "3V3": [],
+    "GND": []
+  },
+  "outputs": [
+    "C:\\Users\\yingz\\OneDrive\\Desktop\\eishu\\cadai\\samples\\RP2040_12V_HBridge\\RP2040_12V_HBridge.circuit.yaml"
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "schema_version": 2,
+  "project": {
+    "name": "RC_Filter_SPICE",
+    "description": "5V step input RC low-pass example"
+  },
+  "design": {
+    "intent": "5Vステップ入力のRCローパス。時定数は10kΩ×100nFで約1ms。",
+    "architecture": "rc_filter",
+    "parameters": {
+      "supply_voltage_V": "5V",
+      "operating_current_A": "0.5mA"
+    },
+    "unknowns": [
+      "実コンデンサのバイアス/温度特性は未評価"
+    ],
+    "constraints": {
+      "supply_voltage_V": "5V"
+    },
+    "datasheets": [],
+    "rules": [
+      "立上り波形と部品許容差を実機条件で確認する"
+    ]
+  },
+  "nets": [
+    {
+      "name": "VCC",
+      "kind": "power",
+      "voltage_V": "5V"
+    },
+    {
+      "name": "RC_OUT",
+      "kind": "signal"
+    },
+    {
+      "name": "GND",
+      "kind": "ground"
+    }
+  ],
+  "components": [
+    {
+      "ref": "J1",
+      "symbol": "Connector:Conn_01x02_Pin",
+      "value": "5V_IN",
+      "pins": {
+        "1": "VCC",
+        "2": "GND"
+      }
+    },
+    {
+      "ref": "R1",
+      "symbol": "Device:R",
+      "value": "10kΩ",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "pins": {
+        "1": "VCC",
+        "2": "RC_OUT"
+      },
+      "ratings": {
+        "power_W": "0.1W"
+      }
+    },
+    {
+      "ref": "C1",
+      "symbol": "Device:C",
+      "value": "100nF",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "pins": {
+        "1": "RC_OUT",
+        "2": "GND"
+      },
+      "ratings": {
+        "voltage_V": "16V"
+      }
+    }
+  ],
+  "metadata": {
+    "author": "CircuitStudio AI",
+    "revision": "2",
+    "description": "Explicit ideal RC transient demo"
+  },
+  "simulation": {
+    "analysis": "transient",
+    "step_s": 1e-05,
+    "stop_s": 0.005,
+    "source": {
+      "positive_net": "VCC",
+      "negative_net": "GND",
+      "initial_voltage_V": 0,
+      "pulsed_voltage_V": 5,
+      "delay_s": 0,
+      "rise_s": 1e-09,
+      "fall_s": 1e-09,
+      "pulse_width_s": 0.003,
+      "period_s": 0.006
+    },
+    "observe_nets": [
+      "RC_OUT"
+    ]
+  }
+}

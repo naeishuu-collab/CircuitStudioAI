@@ -1,0 +1,4 @@
+﻿Reference,Value,Symbol,Footprint,Part Number
+J1,5V_IN,Connector:Conn_01x02_Pin,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,
+R1,1kΩ,Device:R,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal,
+D1,LED_GENERIC,Device:LED,LED_THT:LED_D5.0mm,

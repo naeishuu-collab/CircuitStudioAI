@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# Build and distribution output
+/build/
+/dist/
+/release/
+
+# Local KiCad state and generated validation artifacts
+*.kicad_prl
+*.lck
+*-netlist.xml
+netlist.xml
+/reports/backups/
+/reports/kicad10-validation/
+/reports/baseline-*.log
+/samples/backups/
+
+# Local logs and OS metadata
+*.log
+.DS_Store
+Thumbs.db
+
+# Optional third-party ngspice bundle is carried in the verified Windows Release asset only
+/tools/ngspice-47/

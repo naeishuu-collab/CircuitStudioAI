@@ -1,0 +1,2 @@
+# Optional Windows onedir packaging tool. See THIRD_PARTY_NOTICES.md.
+PyInstaller==6.22.3

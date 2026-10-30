@@ -1,0 +1,12 @@
+* CircuitStudio RC transient; ideal passive models only
+VSTIM N003 0 PULSE(0 5 0 1e-09 1e-09 0.003 0.006)
+R1 N003 N002 10000
+C1 N002 0 1e-07
+.control
+set wr_vecnames
+set wr_singlescale
+tran 1e-05 0.005
+wrdata transient.csv v(N002)
+quit
+.endc
+.end

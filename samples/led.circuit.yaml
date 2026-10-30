@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "project": {"name": "LED_Indicator", "description": "抵抗付きLEDの最小コンパイル例"},
+  "design": {
+    "intent": "5 V入力から抵抗を介してLEDを点灯する。電流は約5 mA。",
+    "architecture": "indicator",
+    "parameters": {"operating_current_A": "5mA"},
+    "unknowns": ["LEDの色・型番と光度要件は未指定"],
+    "constraints": {"supply_voltage_V": 5},
+    "pcb_constraints": {"signal_trace_min_mm": 0.25},
+    "datasheets": [],
+    "rules": ["実装時にLED順方向電圧を確認する"]
+  },
+  "nets": [
+    {"name": "VCC", "kind": "power", "voltage_V": 5},
+    {"name": "LED_A", "kind": "signal"},
+    {"name": "GND", "kind": "ground"}
+  ],
+  "components": [
+    {"ref": "R1", "symbol": "Device:R", "value": "1kΩ", "pins": {"1": "VCC", "2": "LED_A"}, "ratings": {"power_W": "0.125W"}},
+    {"ref": "D1", "symbol": "Device:LED", "value": "LED_GENERIC", "pins": {"1": "GND", "2": "LED_A"}}
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://circuitstudio.local/schemas/circuit.schema.json",
+  "title": "CircuitDSL v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "project", "design", "nets", "components"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "project": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1, "maxLength": 100, "pattern": "^(?!.*\\.\\.)(?!.*[/\\\\:]).+$"},
+        "description": {"type": "string", "maxLength": 2000}
+      },
+      "additionalProperties": false
+    },
+    "design": {
+      "type": "object",
+      "required": ["intent"],
+      "properties": {
+        "intent": {"type": "string", "maxLength": 2000},
+        "architecture": {"type": "string"},
+        "parameters": {"type": "object", "additionalProperties": {"type": ["string", "number", "boolean", "null"]}},
+        "constraints": {"type": "object"},
+        "pcb_constraints": {"type": "object"},
+        "unknowns": {"type": "array", "items": {"type": "string"}},
+        "datasheets": {"type": "array", "items": {"type": "string", "format": "uri"}},
+        "rules": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "nets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {"type": "string", "minLength": 1, "maxLength": 80, "pattern": "^[^\\s()\\\"]+$"},
+          "kind": {"enum": ["signal", "power", "ground"]},
+          "voltage_V": {"type": ["number", "string", "null"]},
+          "description": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "components": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "required": ["ref", "symbol", "value", "pins"],
+        "properties": {
+          "ref": {"type": "string", "pattern": "^[A-Za-z]{1,4}[0-9]+[A-Za-z]?$"},
+          "symbol": {"type": "string", "minLength": 1},
+          "value": {"type": "string", "minLength": 1, "maxLength": 200},
+          "part_number": {"type": "string"},
+          "footprint": {"type": "string"},
+          "datasheet": {"type": "string"},
+          "pins": {"type": "object", "additionalProperties": {"type": "string"}},
+          "no_connect": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "ratings": {"type": "object", "additionalProperties": {"type": ["string", "number", "null"]}}
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

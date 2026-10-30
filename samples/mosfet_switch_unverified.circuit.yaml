@@ -1,0 +1,130 @@
+{
+  "schema_version": 2,
+  "metadata": {
+    "revision": "2.0",
+    "description": "Unselected low-side MOSFET switch topology; not a BOM-ready design"
+  },
+  "project": {
+    "name": "MOSFET_Switch_Unverified",
+    "description": "MOSFET selection and load conditions intentionally unresolved"
+  },
+  "design": {
+    "intent": "3.3Vロジック信号で5V抵抗負荷をローサイドN-MOSFET制御する構造例。部品選定前。",
+    "architecture": "low_side_switch",
+    "parameters": {
+      "supply_voltage_V": "5V",
+      "gate_drive_V": "3.3V"
+    },
+    "unknowns": [
+      "MOSFET型番/ピン配列/フットプリント",
+      "負荷電流と過渡",
+      "ゲート電荷とスイッチング条件",
+      "熱抵抗と周囲温度"
+    ],
+    "constraints": {
+      "logic_voltage_V": "3.3V"
+    },
+    "datasheets": [],
+    "rules": [
+      "実部品と負荷が確定するまで通電しない"
+    ]
+  },
+  "power_rails": [
+    {
+      "net": "VM",
+      "nominal_voltage_V": "5V"
+    }
+  ],
+  "safety_notes": [
+    "未選定の汎用MOSFETシンボル。ピン配列・ゲート条件・定格・熱は未確認。"
+  ],
+  "nets": [
+    {
+      "name": "VM",
+      "kind": "power",
+      "voltage_V": "5V"
+    },
+    {
+      "name": "GPIO_IN",
+      "kind": "signal"
+    },
+    {
+      "name": "GATE",
+      "kind": "signal"
+    },
+    {
+      "name": "LOAD_SW",
+      "kind": "signal"
+    },
+    {
+      "name": "GND",
+      "kind": "ground"
+    }
+  ],
+  "components": [
+    {
+      "ref": "J1",
+      "symbol": "Connector:Conn_01x02_Pin",
+      "value": "LOGIC_INPUT",
+      "pins": {
+        "1": "GPIO_IN",
+        "2": "GND"
+      }
+    },
+    {
+      "ref": "J2",
+      "symbol": "Connector:Conn_01x02_Pin",
+      "value": "5V_LOAD_IN",
+      "pins": {
+        "1": "VM",
+        "2": "GND"
+      }
+    },
+    {
+      "ref": "R1",
+      "symbol": "Device:R",
+      "value": "100Ω",
+      "pins": {
+        "1": "GPIO_IN",
+        "2": "GATE"
+      },
+      "ratings": {
+        "power_W": "0.125W"
+      }
+    },
+    {
+      "ref": "R2",
+      "symbol": "Device:R",
+      "value": "100kΩ",
+      "pins": {
+        "1": "GATE",
+        "2": "GND"
+      },
+      "ratings": {
+        "power_W": "0.125W"
+      }
+    },
+    {
+      "ref": "R3",
+      "symbol": "Device:R",
+      "value": "1kΩ",
+      "pins": {
+        "1": "VM",
+        "2": "LOAD_SW"
+      },
+      "ratings": {
+        "power_W": "0.125W"
+      }
+    },
+    {
+      "ref": "Q1",
+      "symbol": "CircuitStudio:NMOS_3Pin",
+      "value": "UNSELECTED_NMOS",
+      "pins": {
+        "1": "GATE",
+        "2": "GND",
+        "3": "LOAD_SW"
+      }
+    }
+  ]
+}

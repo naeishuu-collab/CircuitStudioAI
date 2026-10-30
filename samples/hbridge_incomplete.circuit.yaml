@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "project": {"name": "RP2040_12V_HBridge", "description": "仕様確認用。回路出力を意図的に保留"},
+  "design": {
+    "intent": "RP2040の3.3 V GPIOから12 V DCモーターを正転・逆転・PWM制御する。",
+    "architecture": "discrete_h_bridge",
+    "parameters": {"motor_voltage_V": "12V", "gate_drive_V": "3.3V", "dead_time_ns": null, "overcurrent_protection": null, "high_side_drive_confirmed": null, "inductive_transient_protection": null, "reset_safe_state_confirmed": null},
+    "unknowns": ["モーター連続電流", "停止電流", "ゲートドライバ型番", "MOSFET型番と放熱条件", "デッドタイム", "保護方式"],
+    "constraints": {"logic_voltage_V": 3.3},
+    "pcb_constraints": {"copper_thickness_oz": null, "max_temperature_rise_C": null},
+    "datasheets": [],
+    "rules": ["停止電流と熱設計が確定するまで部品選定とPCB生成をしない"]
+  },
+  "nets": [
+    {"name": "VM", "kind": "power", "voltage_V": "12V"},
+    {"name": "3V3", "kind": "power", "voltage_V": "3.3V"},
+    {"name": "GND", "kind": "ground"}
+  ],
+  "components": []
+}

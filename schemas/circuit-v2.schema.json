@@ -1,0 +1,630 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://circuitstudio.local/schemas/circuit-v2.schema.json",
+  "title": "CircuitDSL v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project",
+    "design",
+    "nets",
+    "components"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 2
+    },
+    "project": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^(?!.*\\.\\.)(?!.*[/\\\\:]).+$"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 2000
+        }
+      },
+      "additionalProperties": false
+    },
+    "design": {
+      "type": "object",
+      "required": [
+        "intent"
+      ],
+      "properties": {
+        "intent": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "architecture": {
+          "type": "string"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "string",
+              "number",
+              "boolean",
+              "null"
+            ]
+          }
+        },
+        "constraints": {
+          "type": "object"
+        },
+        "pcb_constraints": {
+          "type": "object"
+        },
+        "unknowns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "datasheets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "nets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[^\\s()\\\"]+$"
+          },
+          "kind": {
+            "enum": [
+              "signal",
+              "power",
+              "ground"
+            ]
+          },
+          "voltage_V": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "components": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "required": [
+          "ref",
+          "symbol",
+          "value",
+          "pins"
+        ],
+        "properties": {
+          "ref": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{1,4}[0-9]+[A-Za-z]?$"
+          },
+          "symbol": {
+            "type": "string",
+            "minLength": 1
+          },
+          "value": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "part_number": {
+            "type": "string"
+          },
+          "footprint": {
+            "type": "string"
+          },
+          "datasheet": {
+            "type": "string"
+          },
+          "pins": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "no_connect": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "ratings": {
+            "type": "object",
+            "additionalProperties": {
+              "type": [
+                "string",
+                "number",
+                "null"
+              ]
+            }
+          },
+          "placement": {
+            "type": "object",
+            "properties": {
+              "x_mm": {
+                "type": "number"
+              },
+              "y_mm": {
+                "type": "number"
+              },
+              "rotation_deg": {
+                "type": "number",
+                "default": 0
+              },
+              "side": {
+                "enum": [
+                  "top",
+                  "bottom"
+                ],
+                "default": "top"
+              }
+            },
+            "required": [
+              "x_mm",
+              "y_mm"
+            ],
+            "additionalProperties": false
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": [
+                "string",
+                "number",
+                "boolean",
+                "null"
+              ]
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "author": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "revision": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 2000
+        }
+      },
+      "additionalProperties": false
+    },
+    "power_rails": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "net"
+        ],
+        "properties": {
+          "net": {
+            "type": "string",
+            "minLength": 1
+          },
+          "nominal_voltage_V": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "min_voltage_V": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "max_voltage_V": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "current_limit_A": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "safety_notes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 2000
+      }
+    },
+    "pcb": {
+      "type": "object",
+      "properties": {
+        "layers": {
+          "enum": [
+            2,
+            4
+          ]
+        },
+        "outline": {
+          "type": "object",
+          "required": [
+            "width_mm",
+            "height_mm"
+          ],
+          "properties": {
+            "width_mm": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "height_mm": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "origin_x_mm": {
+              "type": "number"
+            },
+            "origin_y_mm": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": false
+        },
+        "constraints": {
+          "type": "object",
+          "properties": {
+            "clearance_mm": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "exclusiveMinimum": 0
+            },
+            "trace_width_mm": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "exclusiveMinimum": 0
+            },
+            "copper_oz": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "exclusiveMinimum": 0
+            },
+            "temperature_rise_C": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "exclusiveMinimum": 0
+            }
+          },
+          "additionalProperties": false
+        },
+        "placements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "ref",
+              "x_mm",
+              "y_mm"
+            ],
+            "properties": {
+              "ref": {
+                "type": "string"
+              },
+              "x_mm": {
+                "type": "number"
+              },
+              "y_mm": {
+                "type": "number"
+              },
+              "rotation_deg": {
+                "type": "number",
+                "default": 0
+              },
+              "side": {
+                "enum": [
+                  "top",
+                  "bottom"
+                ],
+                "default": "top"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "mounting_holes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "x_mm",
+              "y_mm",
+              "diameter_mm"
+            ],
+            "properties": {
+              "x_mm": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "y_mm": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "diameter_mm": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "routes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "net",
+              "layer",
+              "points"
+            ],
+            "properties": {
+              "net": {
+                "type": "string"
+              },
+              "layer": {
+                "enum": [
+                  "F.Cu",
+                  "B.Cu"
+                ]
+              },
+              "width_mm": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "points": {
+                "type": "array",
+                "minItems": 2,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "x_mm",
+                    "y_mm"
+                  ],
+                  "properties": {
+                    "x_mm": {
+                      "type": "number"
+                    },
+                    "y_mm": {
+                      "type": "number"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "board_thickness_mm": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "severity",
+          "evidence",
+          "recommendation",
+          "method"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "PASS",
+              "FAIL",
+              "WARNING",
+              "UNKNOWN",
+              "BLOCKED",
+              "NOT_VERIFIED",
+              "NOT_EXECUTED"
+            ]
+          },
+          "severity": {
+            "type": "string"
+          },
+          "target": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "evidence": {
+            "type": "string"
+          },
+          "recommendation": {
+            "type": "string"
+          },
+          "method": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "suggestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "summary",
+          "patch"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "patch": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "simulation": {
+      "type": "object",
+      "required": [
+        "analysis",
+        "step_s",
+        "stop_s",
+        "source",
+        "observe_nets"
+      ],
+      "properties": {
+        "analysis": {
+          "const": "transient"
+        },
+        "step_s": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "stop_s": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "source": {
+          "type": "object",
+          "required": [
+            "positive_net",
+            "negative_net",
+            "initial_voltage_V",
+            "pulsed_voltage_V",
+            "delay_s",
+            "rise_s",
+            "fall_s",
+            "pulse_width_s",
+            "period_s"
+          ],
+          "properties": {
+            "positive_net": {
+              "type": "string",
+              "minLength": 1
+            },
+            "negative_net": {
+              "type": "string",
+              "minLength": 1
+            },
+            "initial_voltage_V": {
+              "type": "number"
+            },
+            "pulsed_voltage_V": {
+              "type": "number"
+            },
+            "delay_s": {
+              "type": "number",
+              "minimum": 0
+            },
+            "rise_s": {
+              "type": "number",
+              "minimum": 0
+            },
+            "fall_s": {
+              "type": "number",
+              "minimum": 0
+            },
+            "pulse_width_s": {
+              "type": "number",
+              "minimum": 0
+            },
+            "period_s": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          },
+          "additionalProperties": false
+        },
+        "observe_nets": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
