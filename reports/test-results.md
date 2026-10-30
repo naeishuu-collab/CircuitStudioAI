@@ -97,3 +97,9 @@ Windows 11 Home build 26200、AMD Ryzen AI 7 350、RAM 29.8 GiB、Python 3.13.15
 - ZIP: `CircuitStudioAI-Windows-x64-v0.1.0-preview.1.zip` (26,493,064 bytes)
 - SHA-256: `744e9934b2e205fad8708951cae25ae34a0c1629ab8b2ae464d3a7e7aee8c2fa`
 - GitHubからRelease assetsを取得し、同梱checksumと再計算値が一致することを確認しました。公開先はPUBLIC、Releaseはprerelease、draftではありません。
+
+
+## ソース配布差分チェック
+
+- `git diff --cached --check`: FAIL。KiCadが生成したサンプルSVG 3件とngspice過渡CSV 1件に行末空白がありました。これらのデータを手修正せず保持しています。
+- Python/Markdown/JSON/YAML/PowerShell/バッチ/仕様ファイルを対象にした差分空白確認: PASS。
