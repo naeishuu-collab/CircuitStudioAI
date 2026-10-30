@@ -88,3 +88,12 @@ Windows 11 Home build 26200、AMD Ryzen AI 7 350、RAM 29.8 GiB、Python 3.13.15
 | `build-windows.bat`全体の再実行 | NOT EXECUTED。既存`dist`を保護する停止条件があるため、隔離PyInstallerビルドとパッケージフィルターを個別に検証 |
 
 公開前のテキスト監査では、ユーザーパスを含む生成netlist XML 10件を特定しました。これらは`.gitignore`、PyInstallerの内部データ選択、Windowsパッケージのサンプルフィルターで公開物から除外します。プロジェクト固有LICENSEは未設定のままとし、第三者コンポーネント通知とライセンスファイルを配布物へ同梱します。
+
+
+## GitHub公開結果（2026-10-31）
+
+- Public repository: https://github.com/naeishuu-collab/CircuitStudioAI
+- Prerelease: https://github.com/naeishuu-collab/CircuitStudioAI/releases/tag/v0.1.0-preview.1
+- ZIP: `CircuitStudioAI-Windows-x64-v0.1.0-preview.1.zip` (26,493,064 bytes)
+- SHA-256: `744e9934b2e205fad8708951cae25ae34a0c1629ab8b2ae464d3a7e7aee8c2fa`
+- GitHubからRelease assetsを取得し、同梱checksumと再計算値が一致することを確認しました。公開先はPUBLIC、Releaseはprerelease、draftではありません。
