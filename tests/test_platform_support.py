@@ -24,7 +24,7 @@ class PlatformSupportTests(unittest.TestCase):
                 "circuitstudio.kicad.platform.system", return_value="Darwin"
             ):
                 self.assertEqual(find_kicad_cli(), str(cli))
-                self.assertEqual(_symbol_library_path("Device"), symbol_file)
+                self.assertEqual(_symbol_library_path("Device"), symbol_file.resolve())
 
     def test_macos_gui_launch_uses_open_and_preserves_unicode_path(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -36,7 +36,7 @@ class PlatformSupportTests(unittest.TestCase):
                 "circuitstudio.kicad.shutil.which", return_value="/usr/bin/open"
             ):
                 command = kicad_gui_command(schematic, str(cli))
-            self.assertEqual(command, ["/usr/bin/open", "-a", str(cli.parents[2]), str(schematic)])
+            self.assertEqual(command, ["/usr/bin/open", "-a", str(cli.resolve().parents[2]), str(schematic)])
 
     def test_windows_gui_launch_keeps_native_executable_behavior(self):
         with tempfile.TemporaryDirectory() as temp:
