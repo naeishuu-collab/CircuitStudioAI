@@ -31,6 +31,7 @@ $samplesDestination = Join-Path $dist 'samples'
 $sampleFiles = Get-ChildItem -LiteralPath $samplesSource -File -Recurse | Where-Object {
     $_.Name -notlike '*-netlist.xml' -and
     $_.Name -ne 'netlist.xml' -and
+    $_.Name -notin @('diagnostics.json', 'pcb_diagnostics.json', 'spice_results.json') -and
     $_.Extension -notin @('.kicad_prl', '.lck', '.log') -and
     $_.FullName -notmatch '[\\/]backups[\\/]'
 }

@@ -1,7 +1,7 @@
 {
   "status": "ROUTED",
   "manufacturing_status": "NOT_PROVEN",
-  "file": "C:\\Users\\yingz\\OneDrive\\Desktop\\eishu\\cadai\\reports\\kicad10-validation\\repaired-led-sample-2\\LED_Indicator\\LED_Indicator.kicad_pcb",
+  "file": "<LOCAL_PATH>",
   "pcbnew_version": "10.0.7",
   "design_conditions": {
     "layers": 2,
@@ -32,11 +32,11 @@
       "--format",
       "json",
       "--output",
-      "C:\\Users\\yingz\\AppData\\Local\\Temp\\circuitstudio-ory0n4bi\\report.json",
+      "<LOCAL_PATH>",
       "--severity-all",
-      "C:\\Users\\yingz\\AppData\\Local\\Temp\\circuitstudio-ory0n4bi\\LED_Indicator.kicad_pcb"
+      "<LOCAL_PATH>"
     ],
-    "stdout": "0 個の違反を検出しました\r\n0 個の未配線アイテムを検出しました\r\nC:/Users/yingz/AppData/Local/Temp/circuitstudio-ory0n4bi/report.json にDRC レポートを保存\r\n",
+    "stdout": "0 個の違反を検出しました\r\n0 個の未配線アイテムを検出しました\r\n<LOCAL_PATH> にDRC レポートを保存\r\n",
     "stderr": "",
     "report": "{\n    \"$schema\": \"https://schemas.kicad.org/drc.v1.json\",\n    \"coordinate_units\": \"mm\",\n    \"date\": \"2026-10-30T22:42:46\",\n    \"ignored_checks\": [\n        {\n            \"description\": \"Footprint has no courtyard defined\",\n            \"key\": \"missing_courtyard\"\n        },\n        {\n            \"description\": \"Track endpoint not centered on via\",\n            \"key\": \"track_not_centered_on_via\"\n        },\n        {\n            \"description\": \"Tuning profile track geometries\",\n            \"key\": \"tuning_profile_track_geometries\"\n        },\n        {\n            \"description\": \"Footprint doesn't match symbol's footprint filters\",\n            \"key\": \"footprint_filters_mismatch\"\n        },\n        {\n            \"description\": \"Footprint component type doesn't match footprint pads\",\n            \"key\": \"footprint_type_mismatch\"\n        }\n    ],\n    \"included_severities\": [\n        \"error\",\n        \"warning\",\n        \"exclusion\"\n    ],\n    \"kicad_version\": \"10.0.7\",\n    \"schematic_parity\": [],\n    \"source\": \"LED_Indicator.kicad_pcb\",\n    \"unconnected_items\": [],\n    \"violations\": []\n}\n",
     "report_path": null,
