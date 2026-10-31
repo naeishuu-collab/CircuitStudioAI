@@ -1,10 +1,13 @@
 # CircuitStudio AI 実装状況
 
-最終更新: 2026-10-30。状態は実装/実行した範囲を区別しています。
+最終更新: 2026-10-31。状態は実装/実行した範囲を区別しています。
 
 | 領域 | 状態 | 根拠・制限 |
 |---|---|---|
 | Windows/KiCad環境 | VERIFIED | Windows 11、KiCad 10.0.7、CLI、標準ライブラリ、KiCad同梱 `pcbnew` を実測。ngspice 47は公式配布を検証してプロジェクト内に配置。詳細は環境監査を参照 |
+| macOS CLI/GUI検出 | IMPLEMENTED / CI PENDING | KiCad.appのCLI・シンボルライブラリと`open -a`によるGUI起動に対応。物理Macで未検証 |
+| macOS pcbnew | FAIL-CLOSED / NOT VERIFIED | KICAD_PYTHONを明示し、pcbnewとCLIのバージョンが完全一致した時だけPCB生成。macOSで互換Pythonは未確認 |
+| Cross-platform packaging | IMPLEMENTED / CI PENDING | Windows、macOS ARM64/IntelのActionsジョブ、PyInstaller macOS BUNDLE、DMG/ZIP、展開・SHA-256検査を追加。Actions未実行 |
 | CircuitDSL v1 | IMPLEMENTED / TESTED | 既存形式維持、JSON/YAML解析、スキーマ/意味検査、v1サンプル互換 |
 | CircuitDSL v2 | IMPLEMENTED / TESTED | versioned schema、電源レール、定格/制約、部品/ピン/ネット参照、PCB条件、simulation指定、診断情報。v1 migrationあり。階層/複数シートは未実装 |
 | シンボル/ピン | PARTIAL | 登録カタログとKiCad標準ライブラリ定義を照合。未知型番/ピンは拒否。全KiCadシンボル・全部品型番の自動解決ではない |
@@ -17,6 +20,8 @@
 | 日本語GUI | PARTIAL / SELECTED FLOWS VERIFIED | 配布EXEの起動に加え、GUIからv2 LED回路図/PCB出力、既存PCBのDRC評価/JSON保存、ngspice RC実行を確認。KiCad GUIでschematic/PCB保存・再読込も確認。全ボタン、GUI内プレビューの視覚QA、3D、別PCは未検証 |
 | KiCad IPC | NOT IMPLEMENTED | KiCad 10の対象範囲では回路図の稼働中編集は未対応。GUIドキュメント更新機能は実装していない |
 | Windows EXE | BUILT / SELECTED GUI FLOWS VERIFIED | Python 3.11 + PyInstaller 6.22.3 onedir。起動に加え、LED生成、既存PCB評価、SPICE実行をE2E確認。EXE、Python/Tk、schema/sample/docs、ngspice実行ファイル、ライセンス資料を同梱。KiCad本体は別途必要 |
+
+この作業ブランチは未署名・未公証のmacOS配布候補をCI Artifactとして作成します。macOSのGUI起動・物理操作・公証はCIパッケージの構造検査とは別の未検証項目です。進捗と実測結果は [cross-platform-audit](../reports/cross-platform-audit.md) と [test-results](../reports/test-results.md) を参照してください。
 
 `STRUCTURE_READY_ELECTRICAL_REVIEW_REQUIRED` は構造検査の状態だけです。KiCad ERC/DRC PASS、SPICE成功、GUI起動は、電気安全・実機動作・熱設計・製造可能性の承認ではありません。
 

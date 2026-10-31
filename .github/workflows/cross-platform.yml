@@ -1,0 +1,135 @@
+name: Cross-platform CI
+
+on:
+  push:
+    branches: [main, feature/macos-cross-platform]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows-tests:
+    name: Windows unit tests (Python ${{ matrix.python }})
+    runs-on: windows-2025
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.13']
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Compile and run tests
+        run: |
+          python -c "import tkinter; print('Tk', tkinter.TkVersion)"
+          python -m compileall -q app.py circuitstudio tests
+          python -m unittest discover -v
+
+  windows-package:
+    name: Windows x64 package
+    runs-on: windows-2025
+    needs: windows-tests
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.11'
+      - name: Restore hash-verified Windows ngspice bundle
+        shell: pwsh
+        run: |
+          $sourceZip = Join-Path $env:RUNNER_TEMP 'CircuitStudioAI-Windows-x64-v0.1.0-preview.1.zip'
+          Invoke-WebRequest -Uri 'https://github.com/naeishuu-collab/CircuitStudioAI/releases/download/v0.1.0-preview.1/CircuitStudioAI-Windows-x64-v0.1.0-preview.1.zip' -OutFile $sourceZip
+          $actual = (Get-FileHash -LiteralPath $sourceZip -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actual -ne '744e9934b2e205fad8708951cae25ae34a0c1629ab8b2ae464d3a7e7aee8c2fa') {
+            throw 'Existing Windows release archive checksum mismatch; ngspice will not be reused.'
+          }
+          $staging = Join-Path $env:RUNNER_TEMP 'CircuitStudioAI-verified-ngspice'
+          Expand-Archive -LiteralPath $sourceZip -DestinationPath $staging
+          $source = Join-Path $staging 'CircuitStudioAI\tools\ngspice-47'
+          if (-not (Test-Path -LiteralPath $source)) { throw 'Verified release does not contain ngspice-47.' }
+          New-Item -ItemType Directory -Path 'tools' -Force | Out-Null
+          Copy-Item -LiteralPath $source -Destination 'tools\ngspice-47' -Recurse
+      - name: Build Windows distribution
+        shell: pwsh
+        run: .\build-windows.ps1
+      - name: Archive and inspect Windows distribution
+        shell: pwsh
+        run: |
+          $archive = Join-Path $PWD 'dist\CircuitStudioAI-Windows-x64-ci.zip'
+          Compress-Archive -LiteralPath 'dist\CircuitStudioAI' -DestinationPath $archive
+          $hash = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  $(Split-Path -Leaf $archive)" | Set-Content -LiteralPath "$archive.sha256" -Encoding ascii
+          $extract = Join-Path $env:RUNNER_TEMP 'CircuitStudioAI-package-check'
+          Expand-Archive -LiteralPath $archive -DestinationPath $extract
+          if (-not (Test-Path -LiteralPath (Join-Path $extract 'CircuitStudioAI\CircuitStudioAI.exe'))) {
+            throw 'Packaged EXE is missing after archive extraction.'
+          }
+          if ((Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant() -ne $hash) {
+            throw 'Windows package checksum mismatch.'
+          }
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: CircuitStudioAI-Windows-x64
+          path: |
+            dist/CircuitStudioAI-Windows-x64-ci.zip
+            dist/CircuitStudioAI-Windows-x64-ci.zip.sha256
+          if-no-files-found: error
+          retention-days: 30
+
+  macos-package:
+    name: macOS ${{ matrix.arch }} KiCad integration and package
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            arch: arm64
+          - runner: macos-15-intel
+            arch: x64
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.11'
+      - name: Install KiCad 10 and native ngspice for integration checks
+        run: |
+          brew install --cask kicad
+          brew install ngspice
+      - name: Verify KiCad CLI version and discovery
+        run: |
+          python - <<'PY'
+          import subprocess
+          import sys
+          from circuitstudio.kicad import find_kicad_cli
+
+          cli = find_kicad_cli()
+          if not cli:
+              raise SystemExit("KiCad CLI discovery failed")
+          result = subprocess.run([cli, "version"], check=True, capture_output=True, text=True)
+          print(f"CLI: {cli}")
+          print(f"KiCad: {result.stdout.strip()}")
+          if not result.stdout.strip().startswith("10."):
+              raise SystemExit("Expected KiCad 10.x for this integration job")
+          PY
+      - name: Compile, run unit and native KiCad tests
+        run: |
+          python -c "import tkinter; print('Tk', tkinter.TkVersion)"
+          python -m compileall -q app.py circuitstudio tests
+          python -m unittest discover -v
+      - name: Build and inspect app, ZIP, DMG, and checksums
+        run: bash scripts/build_macos.sh
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: CircuitStudioAI-macOS-${{ matrix.arch }}
+          path: |
+            dist/CircuitStudioAI-macOS-${{ matrix.arch }}.zip
+            dist/CircuitStudioAI-macOS-${{ matrix.arch }}.dmg
+            dist/SHA256SUMS-macos-${{ matrix.arch }}.txt
+          if-no-files-found: error
+          retention-days: 30

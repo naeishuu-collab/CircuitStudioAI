@@ -103,3 +103,33 @@ Windows 11 Home build 26200、AMD Ryzen AI 7 350、RAM 29.8 GiB、Python 3.13.15
 
 - `git diff --cached --check`: FAIL。KiCadが生成したサンプルSVG 3件とngspice過渡CSV 1件に行末空白がありました。これらのデータを手修正せず保持しています。
 - Python/Markdown/JSON/YAML/PowerShell/バッチ/仕様ファイルを対象にした差分空白確認: PASS。
+
+
+## クロスプラットフォーム変更のローカル回帰（2026-10-31）
+
+| 実行 | 環境 | 結果 |
+|---|---|---|
+| `py -3.11 -m unittest discover -v` | Python 3.11.9 / Windows 11 / KiCad 10.0.7 / ngspice 47 | UNIT + INTEGRATION PASS: 42件中41成功、0失敗、1スキップ（任意jsonschemaなし） |
+| `py -3.13 -m unittest discover -v` | Python 3.13.15 / Windows 11 / KiCad 10.0.7 / ngspice 47 | UNIT + INTEGRATION PASS: 42成功、0失敗、0スキップ |
+| `py -3.11 -m compileall -q app.py circuitstudio tests` | Python 3.11.9 | PASS |
+| `py -3.13 -m compileall -q app.py circuitstudio tests` | Python 3.13.15 | PASS |
+| `bash -n scripts/build_macos.sh` | Git Bash on Windows | PASS（構文のみ。Macコマンドは未実行） |
+| PyInstaller spec build | 隔離venv / PyInstaller 6.22.3 / 一時dist | PACKAGE_PASS: Windows EXEとonedir構造を確認。既存distは未変更 |
+| 実際の生成EXE GUI操作 | Windows 11 | GUI_SMOKE_PASS: 起動、日本語画面、同梱LED DSLの読み込み、プロジェクト生成を確認 |
+| GUI生成プロジェクトKiCad CLI | KiCad 10.0.7 | INTEGRATION_PASS: ERC 0件、netlist/SVG PASS、PCB生成ROUTED、DRC 0件。製造判定はNOT_PROVEN |
+| macOS ARM64/Intel build、GUI | Windows開発ホスト | NOT EXECUTED。GitHub Actions結果待ち。物理Mac GUIは別途未検証 |
+
+追加した5件のテストはmacOS KiCad.appパス/シンボルパス、UnicodeファイルのGUI起動コマンド、POSIX ngspiceのネイティブ実行可否、Mac用pcbnewの厳密な版一致/不一致を検査します。Mac向けPCB生成は実ランタイムが版一致しない限り `NOT_EXECUTED` です。
+
+## クロスプラットフォーム変更の修正後再実行（2026-10-31）
+
+| コマンド | 実行環境 | 結果 |
+|---|---|---|
+| `py -3.11 -m unittest discover -v` | Python 3.11.9 | UNIT + KiCad/ngspice integration PASS: 42件中41成功、0失敗、1スキップ（任意jsonschema未導入。新規 platform tests を含む） |
+| `py -3.13 -m unittest discover -v` | Python 3.13.15 | UNIT + KiCad/ngspice integration PASS: 42成功、0失敗、0スキップ（新規 platform tests を含む） |
+| `py -3.11 -m compileall -q app.py circuitstudio tests` | Python 3.11.9 | PASS |
+| `py -3.13 -m compileall -q app.py circuitstudio tests` | Python 3.13.15 | PASS |
+| `git diff --check` | Windows Git | PASS。CRLF変換予定の通知のみ |
+| 認証情報/絶対ユーザーパスの差分走査 | 変更ソース・設定・文書 | PASS。検査パターン該当なし |
+
+テスト修正中に環境変数を全消去する試験セットアップがWindowsのユーザーディレクトリ検出を壊すことを確認しました。テストが必要な変数だけを上書きする形へ直し、その後の上記全体再実行で両Python版が成功しました。Macジョブ、Mac GUI、Mac pcbnew ABIはまだ実行していません。

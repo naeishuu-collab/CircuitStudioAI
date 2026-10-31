@@ -1,6 +1,8 @@
 """Limited KiCad 10 PCB generation using its bundled pcbnew Python runtime."""
 
 import json
+import os
+import platform
 import subprocess
 import tempfile
 from pathlib import Path
@@ -14,8 +16,34 @@ def find_kicad_python():
     cli = find_kicad_cli()
     if not cli:
         return None
+    configured = os.environ.get("KICAD_PYTHON")
+    if configured:
+        candidate = Path(configured).expanduser()
+        if candidate.is_file() and _pcbnew_runtime_matches(candidate, cli):
+            return candidate
+        if platform.system() != "Windows":
+            return None
+    if platform.system() != "Windows":
+        return None
     candidate = Path(cli).with_name("python.exe")
     return candidate if candidate.is_file() else None
+
+
+def _pcbnew_runtime_matches(python, cli):
+    try:
+        runtime = subprocess.run(
+            [str(python), "-c", "import pcbnew; print(pcbnew.GetBuildVersion())"],
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+            timeout=15, check=False, shell=False,
+        )
+        native = subprocess.run(
+            [str(cli), "version"], capture_output=True, text=True,
+            encoding="utf-8", errors="replace", timeout=15, check=False, shell=False,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+    return (runtime.returncode == 0 and native.returncode == 0
+            and runtime.stdout.strip() == native.stdout.strip())
 
 
 def generate_pcb(data, output_path, timeout=120):
@@ -49,7 +77,9 @@ def generate_pcb(data, output_path, timeout=120):
         return {"status": "BLOCKED", "reason": "CircuitDSLの意味検証にFAILがあります。", "diagnostics": [item.to_dict() for item in failures]}
     python = find_kicad_python()
     if not python:
-        return {"status": "NOT_EXECUTED", "reason": "KiCad同梱python.exeを検出できません。", "file": str(output)}
+        return {"status": "NOT_EXECUTED",
+                "reason": "KiCadと同じバージョンのpcbnew Pythonが未検出です。macOSではABI確認済みの実行環境をKICAD_PYTHONに指定してください。",
+                "file": str(output)}
     adapter = Path(__file__).with_name("pcbnew_adapter.py")
     with tempfile.TemporaryDirectory(prefix="circuitstudio-pcb-") as temp:
         source = Path(temp) / "circuit.json"
