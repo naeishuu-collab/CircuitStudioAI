@@ -21,13 +21,14 @@ macOS版はMac上でビルドします。GitHub Actionsの [Cross-platform CI](h
 
 1. DMGを開き、`CircuitStudioAI-macOS-<arch>.app`をアプリケーションフォルダーまたは自分のユーザーフォルダーへコピーします。
 2. 配布物はDeveloper ID署名・Apple公証をしていません。まず配布元とSHA-256を確認し、FinderでアプリをControlクリックして「開く」を選びます。macOSが保留した場合は「システム設定 → プライバシーとセキュリティ」に表示されたアプリ名を確認して「このまま開く」を選んでください。Gatekeeperを無効化しないでください。
-3. KiCad本体は含まれません。KiCad 10を別途インストールしてください。CLIは通常 `/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli` にあります。自動検出されない場合、ターミナルから `KICAD_CLI` にCLIのフルパスを設定して起動します。
+3. KiCad本体は含まれません。KiCad 10を別途インストールし、初回起動時に標準のシンボル/フットプリントライブラリテーブルを設定してください。KiCad CLIは通常 `/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli` にあります。自動検出されない場合、ターミナルから `KICAD_CLI` にCLIのフルパスを設定して起動します。
 4. 回路図・ERC・netlist・SVG・PCB DRCはKiCad CLIを使います。PCB生成にはKiCadと同じバージョンの `pcbnew` を読み込めるPython実行環境が必要です。バージョン一致を確認したうえで `KICAD_PYTHON` を設定します。
 
    ```sh
    /path/to/python3 -c 'import pcbnew; print(pcbnew.GetBuildVersion())'
    /Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli version
-   KICAD_CLI=/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli KICAD_PYTHON=/path/to/python3 /Applications/CircuitStudioAI-macOS-arm64.app/Contents/MacOS/CircuitStudioAI
+   APP_PATH=/Applications/CircuitStudioAI-macOS-arm64.app  # Intel版はx64.app
+   KICAD_CLI=/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli KICAD_PYTHON=/path/to/python3 "$APP_PATH/Contents/MacOS/CircuitStudioAI"
    ```
 
    2つのバージョンが一致しない場合や `pcbnew` を読み込めない場合、基板生成は `NOT_EXECUTED` になります。KiCad 10の `pcbnew` は将来のKiCadで削除予定の旧APIです。

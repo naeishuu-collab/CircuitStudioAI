@@ -136,6 +136,20 @@ jobs:
           if not result.stdout.strip().startswith("10."):
               raise SystemExit("Expected KiCad 10.x for this integration job")
           PY
+      - name: Smoke-test the Japanese Tk application window
+        run: |
+          python - <<'PY'
+          import tkinter as tk
+          from circuitstudio.gui import CircuitStudioApp
+
+          root = tk.Tk()
+          try:
+              CircuitStudioApp(root)
+              root.update()
+              print(f"Tk GUI smoke passed (Tk {tk.TkVersion})")
+          finally:
+              root.destroy()
+          PY
       - name: Compile, run unit and native KiCad tests
         run: |
           python -c "import tkinter; print('Tk', tkinter.TkVersion)"
