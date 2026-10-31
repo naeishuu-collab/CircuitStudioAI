@@ -1,17 +1,18 @@
 # Windows / macOS インストール・起動ガイド
 
-## 配布版を使う
+## Windows配布版（CI Artifact）
 
-1. GitHub Releasesから `CircuitStudioAI-Windows-x64-v0.1.0-preview.1.zip` をダウンロードして展開します。
-2. ZIPと同じReleaseに掲載されたSHA-256と照合します（PowerShell）。
+現在のWindows配布物はGitHub Actionsの [Cross-platform CI](https://github.com/naeishuu-collab/CircuitStudioAI/actions/workflows/cross-platform.yml) から取得します。`feature/macos-cross-platform` の最新成功runを開き、`CircuitStudioAI-Windows-x64` Artifactをダウンロードしてください。Artifact内の `CircuitStudioAI-Windows-x64-ci.zip` と `.sha256` を同じフォルダーに置き、次のコマンドで照合します。
 
-   ```powershell
-   Get-FileHash .\CircuitStudioAI-Windows-x64-v0.1.0-preview.1.zip -Algorithm SHA256
-   ```
+```powershell
+$expected = ((Get-Content .\CircuitStudioAI-Windows-x64-ci.zip.sha256).Trim() -split '\s+')[0]
+$actual = (Get-FileHash .\CircuitStudioAI-Windows-x64-ci.zip -Algorithm SHA256).Hash.ToLowerInvariant()
+if ($actual -ne $expected) { throw 'SHA-256 mismatch' }
+```
 
-3. 展開先の `CircuitStudioAI\CircuitStudioAI.exe` を起動します。Pythonは不要です。
-4. 回路図/PCBの実機検査にはKiCad 10を別途インストールしてください。KiCadのCLIを自動検出できない場合、アプリのKiCad CLI設定で `kicad-cli.exe` のフルパスを指定します。
-5. SPICE解析は配布物内のngspice 47を使います。解析モデルが不足する回路は実行せず、未実行として報告します。
+確認後ZIPを展開し、`CircuitStudioAI\CircuitStudioAI.exe` を起動します。Pythonは不要です。GitHub Actions Artifactの保存期間は30日です。KiCad 10はERC/DRC等のネイティブ検査に別途必要です。SPICEは配布物内のngspice 47を使い、モデルが不足する回路は未実行として報告します。
+
+**旧 `v0.1.0-preview.1` のWindows ZIPには、生成済み診断レポートにローカル端末の絶対パスが含まれることを確認しました。既存Releaseは依頼どおり変更していません。旧ZIPを再配布せず、上記のサニタイズ済みCI Artifactを使用してください。**
 
 WindowsのSmartScreenが表示された場合は、発行元未署名の配布物として扱い、Releaseのハッシュと配布元を確認してください。保護機能を無効にする必要はありません。
 

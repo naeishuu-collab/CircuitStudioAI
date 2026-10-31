@@ -138,4 +138,23 @@ Windows 11 Home build 26200、AMD Ryzen AI 7 350、RAM 29.8 GiB、Python 3.13.15
 
 - Run [`41155460960`](https://github.com/naeishuu-collab/CircuitStudioAI/actions/runs/41155460960)（commit `ad0f33d`）では、WindowsとmacOSで一時ディレクトリのcanonical path表記が異なるためplatform testsが失敗しました。期待値を各実行環境の `Path.resolve()` に合わせました。
 - macOS runnerはKiCad CLI 10.0.7を検出しましたが、初回設定のglobal symbol/footprint tableがないため「current configuration does not include the symbol library」警告が発生しました。KiCad 10付属の標準テーブルをrunnerの一時ユーザー設定へコピーする初期化ステップを追加しました。
-- 修正後のActionsは別commitで再実行中です。最終結果とartifact SHA-256は完了後に追記します。
+- 最終結果は下記「クロスプラットフォームCI最終検証」と、最新の[Cross-platform CI run](https://github.com/naeishuu-collab/CircuitStudioAI/actions/workflows/cross-platform.yml)を参照してください。
+
+
+## クロスプラットフォームCI最終検証（2026-10-31）
+
+[Cross-platform CI](https://github.com/naeishuu-collab/CircuitStudioAI/actions/workflows/cross-platform.yml) のfeature branch上の最新成功runで全5 jobが成功しました。Windows、macOS ARM64/IntelのPyInstaller配布物を生成し、ローカル絶対パス/秘密トークン監査とchecksum検証を行います。
+
+| job | 実測 | 結果 |
+|---|---|---|
+| Windows / Python 3.11 | 44 tests、8 skip、0 fail | UNIT_PASS。GitHub runnerにKiCad/ngspiceがないため依存統合ケースはskip |
+| Windows / Python 3.13 | 44 tests、8 skip、0 fail | UNIT_PASS。上と同じskip条件 |
+| Windows x64 package | PyInstaller EXE/ZIP生成、CRC、再展開、配布監査 | PACKAGE_PASS |
+| macOS ARM64 | macOS 15、KiCad 10.0.7、44 tests、3 skip、0 fail | GUI window create/update/destroy、KiCad CLI、ERC/netlist/SVG、PCB DRC、抽出後 `.app` process smoke、ZIP/DMG検査と配布監査 PASS |
+| macOS Intel | macOS 15 Intel、KiCad 10.0.5、44 tests、3 skip、0 fail | ARM64と同じCI検査 PASS |
+
+Artifactをダウンロードして再検査した前回成功runでは、Windows ZIPのローカルパス/credential検出0件、Mac ARM64/Intel ZIPは各449 entriesで同検出0件でした。3 OS/アーキテクチャすべてでZIP CRCと同梱SHA-256を照合しました。`scripts/audit_distribution.py` が今後のWindows/macOS CI梱包でテキストファイルと内包ZIPを自動監査します。Windows配布から古い生成済み診断JSONを除外し、7つの追跡サンプルJSONは診断値を保って端末パスのみを匿名化しました。
+
+セキュリティ監査で既存 `v0.1.0-preview.1` Windows Release ZIP内にもローカル端末の絶対パスを検出しました。既存Releaseを変更しないという指示に従い資産はそのままです。新規prereleaseは旧公開資産の扱いが未解決のため作成していません。修正ブランチの最新ファイルと新しいCI Artifactでは検出0件ですが、既存Releaseおよび過去Git履歴の値を遡及削除してはいません。
+
+macOS CI runnerでTk windowと抽出済み `.app` processを検査しましたが、物理Macでの手動視覚操作は `PHYSICAL_NOT_TESTED`。Developer ID署名・公証、macOS `pcbnew` ABI/基板生成、全画面フローは `NOT_EXECUTED` です。Intel runnerでのKiCad 10.0.5検証は10.0系互換性の確認であり、10.0.7 Intel実機検証ではありません。

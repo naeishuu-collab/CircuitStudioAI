@@ -26,7 +26,7 @@ jobs:
       - name: Compile and run tests
         run: |
           python -c "import tkinter; print('Tk', tkinter.TkVersion)"
-          python -m compileall -q app.py circuitstudio tests
+          python -m compileall -q app.py circuitstudio scripts tests
           python -m unittest discover -v
 
   windows-package:
@@ -71,6 +71,7 @@ jobs:
           if ((Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant() -ne $hash) {
             throw 'Windows package checksum mismatch.'
           }
+          python scripts/audit_distribution.py dist
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: CircuitStudioAI-Windows-x64
@@ -153,10 +154,12 @@ jobs:
       - name: Compile, run unit and native KiCad tests
         run: |
           python -c "import tkinter; print('Tk', tkinter.TkVersion)"
-          python -m compileall -q app.py circuitstudio tests
+          python -m compileall -q app.py circuitstudio scripts tests
           python -m unittest discover -v
       - name: Build and inspect app, ZIP, DMG, and checksums
         run: bash scripts/build_macos.sh
+      - name: Audit distribution for local paths and credentials
+        run: python scripts/audit_distribution.py dist
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: CircuitStudioAI-macOS-${{ matrix.arch }}

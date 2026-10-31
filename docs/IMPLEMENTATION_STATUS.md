@@ -5,9 +5,9 @@
 | 領域 | 状態 | 根拠・制限 |
 |---|---|---|
 | Windows/KiCad環境 | VERIFIED | Windows 11、KiCad 10.0.7、CLI、標準ライブラリ、KiCad同梱 `pcbnew` を実測。ngspice 47は公式配布を検証してプロジェクト内に配置。詳細は環境監査を参照 |
-| macOS CLI/GUI検出 | IMPLEMENTED / CI PENDING | KiCad.appのCLI・シンボルライブラリと`open -a`によるGUI起動に対応。物理Macで未検証 |
+| macOS CLI/GUI検出 | IMPLEMENTED / CI VERIFIED | macOS 15 ARM64/Intel runnerでKiCad CLI/シンボル解決、Tk window smoke、`open -a`の引数生成を検証。物理Mac操作は未検証 |
 | macOS pcbnew | FAIL-CLOSED / NOT VERIFIED | KICAD_PYTHONを明示し、pcbnewとCLIのバージョンが完全一致した時だけPCB生成。macOSで互換Pythonは未確認 |
-| Cross-platform packaging | IMPLEMENTED / CI PENDING | Windows、macOS ARM64/IntelのActionsジョブ、PyInstaller macOS BUNDLE、DMG/ZIP、展開・SHA-256検査を追加。Actions未実行 |
+| Cross-platform packaging | IMPLEMENTED / CI VERIFIED | Windows x64、macOS ARM64/Intelの全5 Actions job成功。EXE、BUNDLE、ZIP/DMG、展開/CRC/SHA-256/アプリ起動スモークを確認。配布テキスト/ZIPのローカルパス・資格情報監査をCIに追加 |
 | CircuitDSL v1 | IMPLEMENTED / TESTED | 既存形式維持、JSON/YAML解析、スキーマ/意味検査、v1サンプル互換 |
 | CircuitDSL v2 | IMPLEMENTED / TESTED | versioned schema、電源レール、定格/制約、部品/ピン/ネット参照、PCB条件、simulation指定、診断情報。v1 migrationあり。階層/複数シートは未実装 |
 | シンボル/ピン | PARTIAL | 登録カタログとKiCad標準ライブラリ定義を照合。未知型番/ピンは拒否。全KiCadシンボル・全部品型番の自動解決ではない |
@@ -21,7 +21,7 @@
 | KiCad IPC | NOT IMPLEMENTED | KiCad 10の対象範囲では回路図の稼働中編集は未対応。GUIドキュメント更新機能は実装していない |
 | Windows EXE | BUILT / SELECTED GUI FLOWS VERIFIED | Python 3.11 + PyInstaller 6.22.3 onedir。起動に加え、LED生成、既存PCB評価、SPICE実行をE2E確認。EXE、Python/Tk、schema/sample/docs、ngspice実行ファイル、ライセンス資料を同梱。KiCad本体は別途必要 |
 
-この作業ブランチは未署名・未公証のmacOS配布候補をCI Artifactとして作成します。macOSのGUI起動・物理操作・公証はCIパッケージの構造検査とは別の未検証項目です。進捗と実測結果は [cross-platform-audit](../reports/cross-platform-audit.md) と [test-results](../reports/test-results.md) を参照してください。
+この作業ブランチは未署名・未公証の配布候補をCI Artifactとして作成します。macOS CI runnerではTk画面生成と抽出後 `.app` process起動を検査済みですが、物理MacでのGUI操作、署名・公証、macOS `pcbnew` ABIは未検証です。既存v0.1.0 Windows Releaseにローカルパスを含む旧診断レポートがあるため、既存Releaseは変更せず新しいprereleaseも保留しています。進捗と実測結果は [cross-platform-audit](../reports/cross-platform-audit.md) と [test-results](../reports/test-results.md) を参照してください。
 
 `STRUCTURE_READY_ELECTRICAL_REVIEW_REQUIRED` は構造検査の状態だけです。KiCad ERC/DRC PASS、SPICE成功、GUI起動は、電気安全・実機動作・熱設計・製造可能性の承認ではありません。
 

@@ -40,7 +40,9 @@ KiCad IPC supports macOS and Windows, but the application does not implement an 
 
 ## Build and release policy
 
-PyInstaller's official spec supports a macOS `BUNDLE`; the Mac script runs on Mac, creates a DMG and ZIP, extracts and checks the app structure, launches the extracted bundle for a process smoke test, and emits SHA-256 checksums. Artifacts are CI outputs only. They have no Developer ID signature or notarization. The existing v0.1.0 prerelease is not replaced; a new prerelease is withheld until platform validation is sufficient.
+PyInstaller's official spec supports a macOS `BUNDLE`; the Mac script runs on Mac, creates a DMG and ZIP, extracts and checks the app structure, launches the extracted bundle for a process smoke test, and emits SHA-256 checksums. The latest successful [Cross-platform CI run](https://github.com/naeishuu-collab/CircuitStudioAI/actions/workflows/cross-platform.yml) passed all five jobs. It builds Windows x64, macOS ARM64, and macOS Intel artifacts. The Mac jobs install KiCad 10.0.7 (ARM64) and 10.0.5 (Intel), then run Tk window smoke, schematic/ERC/netlist/SVG/PCB DRC tests, and an extracted-app process smoke. Downloaded archives passed CRC and SHA-256 checks; a fresh text-file scan found no local-user paths in these new artifacts. `scripts/audit_distribution.py` now gates the Windows/macOS package jobs against local paths and credential patterns. Actions artifacts expire after 30 days.
+
+The artifacts have no Developer ID signature or notarization. Physical Mac visual interaction and the `pcbnew` ABI/PCB-generation path remain unverified. The existing v0.1.0 prerelease ZIP contains local workstation paths in stale generated diagnostics. That release remains unchanged as instructed. A new prerelease is held until the old public asset can be safely addressed; do not redistribute the old Windows ZIP. The latest branch files and new build exclude/redact these reports, but existing public release assets and prior Git history were not rewritten.
 
 References:
 
