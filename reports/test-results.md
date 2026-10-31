@@ -133,3 +133,9 @@ Windows 11 Home build 26200、AMD Ryzen AI 7 350、RAM 29.8 GiB、Python 3.13.15
 | 認証情報/絶対ユーザーパスの差分走査 | 変更ソース・設定・文書 | PASS。検査パターン該当なし |
 
 テスト修正中に環境変数を全消去する試験セットアップがWindowsのユーザーディレクトリ検出を壊すことを確認しました。テストが必要な変数だけを上書きする形へ直し、その後の上記全体再実行で両Python版が成功しました。Macジョブ、Mac GUI、Mac pcbnew ABIはまだ実行していません。
+
+## GitHub Actions初回診断
+
+- Run [`41155460960`](https://github.com/naeishuu-collab/CircuitStudioAI/actions/runs/41155460960)（commit `ad0f33d`）では、WindowsとmacOSで一時ディレクトリのcanonical path表記が異なるためplatform testsが失敗しました。期待値を各実行環境の `Path.resolve()` に合わせました。
+- macOS runnerはKiCad CLI 10.0.7を検出しましたが、初回設定のglobal symbol/footprint tableがないため「current configuration does not include the symbol library」警告が発生しました。KiCad 10付属の標準テーブルをrunnerの一時ユーザー設定へコピーする初期化ステップを追加しました。
+- 修正後のActionsは別commitで再実行中です。最終結果とartifact SHA-256は完了後に追記します。

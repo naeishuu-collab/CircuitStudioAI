@@ -32,6 +32,8 @@ This development host is Windows and cannot produce or launch a native macOS app
 
 KiCad's macOS download page currently lists KiCad 10.0.7 and macOS 12 or newer. The CLI documentation gives the app-bundle CLI location under `/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli`. This project detects that path, resolves symbols from the app's SharedSupport directory, and opens files through macOS `open -a`. The workflow installs KiCad on the runner and fails if the detected CLI is not KiCad 10.x.
 
+The macOS CI job copies KiCad 10's bundled default symbol and footprint library tables into the ephemeral runner's documented user configuration folder. This reproduces a fresh installation's first-run library setup without modifying the KiCad application bundle.
+
 KiCad's documentation marks the SWIG `pcbnew` bindings deprecated since KiCad 9, with planned removal in KiCad 11. On macOS, PCB generation is therefore fail-closed: it requires an explicit `KICAD_PYTHON`, imports `pcbnew`, and compares its build version with `kicad-cli version`. A missing or mismatched runtime returns `NOT_EXECUTED`. The Mac ABI itself is not claimed compatible.
 
 KiCad IPC supports macOS and Windows, but the application does not implement an IPC client. Schematic generation and DRC/ERC checks use native files and the CLI. SPICE on Mac requires an external native ngspice; no Windows binary is shipped in the Mac artifact.

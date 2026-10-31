@@ -101,6 +101,25 @@ jobs:
         run: |
           brew install --cask kicad
           brew install ngspice
+      - name: Initialize isolated KiCad 10 global library tables
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from circuitstudio.kicad import find_kicad_cli
+
+          cli = find_kicad_cli()
+          if not cli:
+              raise SystemExit("KiCad CLI discovery failed before library setup")
+          template = Path(cli).resolve().parents[1] / "SharedSupport" / "template"
+          config = Path.home() / "Library" / "Preferences" / "kicad" / "10.0"
+          config.mkdir(parents=True, exist_ok=True)
+          for name in ("sym-lib-table", "fp-lib-table"):
+              source = template / name
+              if not source.is_file():
+                  raise SystemExit(f"KiCad default table is missing: {source}")
+              (config / name).write_bytes(source.read_bytes())
+          print(f"Copied KiCad 10 default library tables into isolated runner config: {config}")
+          PY
       - name: Verify KiCad CLI version and discovery
         run: |
           python - <<'PY'
