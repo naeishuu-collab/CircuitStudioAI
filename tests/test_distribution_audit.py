@@ -22,7 +22,10 @@ class DistributionAuditTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             local_path = "C:" + "\\" + "Users" + "\\" + "example" + "\\" + "CircuitStudio"
-            (root / "diagnostics.json").write_text(json.dumps({"project": local_path}), encoding="utf-8")
+            mac_path = "/" + "Users" + "/" + "example" + "/Library"
+            (root / "diagnostics.json").write_text(
+                json.dumps({"project": local_path, "mac_export": mac_path}), encoding="utf-8"
+            )
             with ZipFile(root / "app.zip", "w") as archive:
                 archive.writestr("config.txt", "sk-" + "a" * 30 + "\n")
             findings = scan_distribution(root)

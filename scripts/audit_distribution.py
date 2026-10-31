@@ -12,7 +12,14 @@ TEXT_SUFFIXES = {
     ".bat", ".cir", ".cfg", ".csv", ".ini", ".json", ".md", ".ps1",
     ".py", ".sh", ".spec", ".txt", ".xml", ".yaml", ".yml",
 }
-LOCAL_PATH = re.compile(rb'''(?i)(?:[A-Z]:\\Users\\[^\\/\s"'<>]+|/Users/[^/\s"'<>]+)''')
+_BACKSLASH = re.escape(bytes([92]))
+_SLASH = bytes([47])
+_LOCAL_PATH_PATTERN = (
+    rb"(?i)(?:[A-Z]:" + _BACKSLASH + b"Users" + _BACKSLASH
+    + rb"[^" + _BACKSLASH + _SLASH + rb"\s\"'<>]+|"
+    + _SLASH + b"Users" + _SLASH + rb"[^/\s\"'<>]+)"
+)
+LOCAL_PATH = re.compile(_LOCAL_PATH_PATTERN)
 CREDENTIAL = re.compile(
     rb'''(?i)\b(?:sk-[a-z0-9_-]{20,}|gh[pousr]_[a-z0-9]{20,}|github_pat_[a-z0-9_]{20,}|AKIA[0-9A-Z]{16})\b'''
 )
