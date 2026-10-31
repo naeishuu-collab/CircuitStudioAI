@@ -49,7 +49,7 @@ KiCad CLIがあれば実機統合テストを行い、なければ該当テス�
 
 ## クロスプラットフォームCI
 
-[`Cross-platform CI`](https://github.com/naeishuu-collab/CircuitStudioAI/actions/workflows/cross-platform.yml) はWindows Python 3.11/3.13と、macOS ARM64/Intelでテストし、各OSの配布ZIPをArtifactに保存します。macOSジョブはTkアプリ画面の生成・更新・終了スモーク、KiCad 10 CLIによる回路図/ERC/netlist/SVG/PCB DRC、`.app`/DMGの構造・展開検査を行います。GUIを実際に操作したMac実機検証や署名・公証とは区別してください。
+[`Cross-platform CI`](https://github.com/naeishuu-collab/CircuitStudioAI/actions/workflows/cross-platform.yml) はWindows Python 3.11/3.13と、macOS ARM64/Intelでテストし、各OSの配布ZIPをArtifactに保存します。macOSジョブはTkアプリ画面の生成・更新・終了、展開後`.app`プロセスの起動スモーク、KiCad 10 CLIによる回路図/ERC/netlist/SVG/PCB DRC、DMGの展開検査を行います。GUIを実際に操作したMac実機検証や署名・公証とは区別してください。
 
 CircuitStudio固有の `LICENSE` は未設定です。この公開は再配布・改変許諾を示しません。第三者コンポーネントの条件は [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) を確認してください。
 

@@ -54,6 +54,20 @@ ditto -x -k "$zip" "$extract"
 restored="$extract/$(basename "$package")/CircuitStudioAI-macOS-$arch.app"
 plutil -lint "$restored/Contents/Info.plist"
 test -x "$restored/Contents/MacOS/$executable"
+open -a "$restored"
+sleep 5
+app_pid="$(pgrep -x "$executable" | head -n 1 || true)"
+if [[ -z "$app_pid" ]]; then
+  echo "Extracted app did not stay running after launch." >&2
+  exit 1
+fi
+kill -TERM "$app_pid"
+for _ in {1..10}; do
+  kill -0 "$app_pid" 2>/dev/null || break
+  sleep 1
+done
+kill -KILL "$app_pid" 2>/dev/null || true
+echo "Extracted macOS app launch smoke passed (bundle executable: $executable)."
 
 hdiutil create -volname "CircuitStudioAI macOS $arch" -srcfolder "$package" -format UDZO "$dmg"
 hdiutil imageinfo "$dmg" >/dev/null

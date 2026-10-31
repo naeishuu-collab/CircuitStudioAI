@@ -40,7 +40,7 @@ KiCad IPC supports macOS and Windows, but the application does not implement an 
 
 ## Build and release policy
 
-PyInstaller's official spec supports a macOS `BUNDLE`; the Mac script runs on Mac, creates a DMG and ZIP, extracts and checks the app structure, and emits SHA-256 checksums. Artifacts are CI outputs only. They are unsigned and unnotarized. The existing v0.1.0 prerelease is not replaced; a new prerelease is withheld until platform validation is sufficient.
+PyInstaller's official spec supports a macOS `BUNDLE`; the Mac script runs on Mac, creates a DMG and ZIP, extracts and checks the app structure, launches the extracted bundle for a process smoke test, and emits SHA-256 checksums. Artifacts are CI outputs only. They have no Developer ID signature or notarization. The existing v0.1.0 prerelease is not replaced; a new prerelease is withheld until platform validation is sufficient.
 
 References:
 

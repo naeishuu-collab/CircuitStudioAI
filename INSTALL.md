@@ -34,7 +34,7 @@ macOS版はMac上でビルドします。GitHub Actionsの [Cross-platform CI](h
    2つのバージョンが一致しない場合や `pcbnew` を読み込めない場合、基板生成は `NOT_EXECUTED` になります。KiCad 10の `pcbnew` は将来のKiCadで削除予定の旧APIです。
 5. ngspiceはmacOSアプリに含めていません。必要ならmacOS向けngspiceを別途用意し、ターミナル起動時の `PATH` または `NGSPICE` で指定してください。
 
-CIはGitHubのmacOS 15 runnerでアプリのビルド・CLI連携・パッケージ展開を検査します。macOS 15より前のOS、署名・公証、物理MacでのGUI操作はこの検査に含まれません。KiCad 10本体は別途必要です。
+CIはGitHubのmacOS 15 runnerでTkウィンドウの生成と、展開した`.app`のプロセス起動、KiCad CLI連携、ZIP/DMG展開を検査します。macOS 15より前のOS、署名・公証、物理Macでの画面操作はこの検査に含まれません。KiCad 10本体は別途必要です。
 
 ## ソースから起動する
 
