@@ -1,5 +1,13 @@
 # 更新履歴
 
+## 開発中 — Windows/macOS クロスプラットフォーム化
+
+- Windows専用のKiCad探索をOS別にし、macOS KiCad 10アプリのCLI、シンボルライブラリ、GUI起動に対応。
+- ngspiceは各OSのネイティブ実行ファイルだけを検出し、Windows実行ファイルをmacOSで誤実行しない。
+- macOSの基板生成はKiCadと同じ版のpcbnewを読み込めるPythonをKICAD_PYTHONで指定し、版が一致しない場合は停止。
+- macOS ARM64/IntelとWindowsのGitHub Actionsビルド、パッケージ構造・SHA-256検査を追加。
+- macOSの署名・公証、物理MacでのGUI E2E、KiCad 10 pcbnew環境は未確認。CI実行結果はテストレポートを参照。
+
 ## v0.1.0-preview.1 — 2026-10-31
 
 - CircuitDSL v1/v2検証、KiCad回路図生成、BOM、日本語診断、SVG、ERC/netlist連携。

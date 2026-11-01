@@ -1,8 +1,10 @@
 """Minimal native Windows desktop UI built with Python's standard Tk toolkit."""
 
 import json
+import os
 import queue
 import subprocess
+import sys
 import threading
 import tkinter as tk
 from pathlib import Path
@@ -10,13 +12,15 @@ from tkinter import filedialog, messagebox, ttk
 
 from .analysis import analyze
 from .dsl import DslError, parse_circuit
-from .kicad import compile_project, find_kicad_cli, run_native_check
+from .kicad import compile_project, kicad_gui_command, run_native_check
 from .pcb import inspect_board
 from .providers import OpenAICompatibleProvider
 from .spice import simulate
 from .sexpr import require_root
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent.parent))
+UI_FONT = "Yu Gothic UI" if os.name == "nt" else "TkDefaultFont"
+MONO_FONT = "Consolas" if os.name == "nt" else "TkFixedFont"
 
 
 class CircuitStudioApp:
@@ -35,7 +39,7 @@ class CircuitStudioApp:
     def _build(self):
         top = ttk.Frame(self.root, padding=10)
         top.pack(fill="x")
-        ttk.Label(top, text="日本語の設計指示", font=("Yu Gothic UI", 11, "bold")).pack(anchor="w")
+        ttk.Label(top, text="日本語の設計指示", font=(UI_FONT, 11, "bold")).pack(anchor="w")
         self.instruction = tk.Text(top, height=3, wrap="word")
         self.instruction.pack(fill="x", pady=(4, 8))
         bar = ttk.Frame(top)
@@ -49,14 +53,14 @@ class CircuitStudioApp:
             button.pack(side="left", padx=(0, 5), pady=2)
             self._action_buttons.append(button)
         ttk.Label(self.root, text="CircuitDSL (JSON形式はそのままYAML 1.2としても有効です)", padding=(10, 2),
-                  font=("Yu Gothic UI", 11, "bold")).pack(anchor="w")
+                  font=(UI_FONT, 11, "bold")).pack(anchor="w")
         split = ttk.Panedwindow(self.root, orient="vertical")
         split.pack(fill="both", expand=True, padx=10, pady=(2, 8))
         dsl_frame = ttk.Frame(split)
         result_frame = ttk.Frame(split)
         split.add(dsl_frame, weight=3)
         split.add(result_frame, weight=2)
-        self.editor = tk.Text(dsl_frame, wrap="none", undo=True, font=("Consolas", 10))
+        self.editor = tk.Text(dsl_frame, wrap="none", undo=True, font=(MONO_FONT, 10))
         yscroll = ttk.Scrollbar(dsl_frame, orient="vertical", command=self.editor.yview)
         xscroll = ttk.Scrollbar(dsl_frame, orient="horizontal", command=self.editor.xview)
         self.editor.configure(yscrollcommand=yscroll.set, xscrollcommand=xscroll.set)
@@ -65,8 +69,8 @@ class CircuitStudioApp:
         xscroll.grid(row=1, column=0, sticky="ew")
         dsl_frame.columnconfigure(0, weight=1)
         dsl_frame.rowconfigure(0, weight=1)
-        ttk.Label(result_frame, text="診断・実行履歴", font=("Yu Gothic UI", 11, "bold")).pack(anchor="w")
-        self.results = tk.Text(result_frame, height=10, wrap="word", state="disabled", font=("Yu Gothic UI", 9))
+        ttk.Label(result_frame, text="診断・実行履歴", font=(UI_FONT, 11, "bold")).pack(anchor="w")
+        self.results = tk.Text(result_frame, height=10, wrap="word", state="disabled", font=(UI_FONT, 9))
         self.results.pack(fill="both", expand=True, pady=(4, 0))
         self._log("手動DSLはAPIキーなしで利用できます。KiCad ERC/DRCとSPICEは実行環境に依存します。")
 
@@ -255,13 +259,12 @@ class CircuitStudioApp:
         path = filedialog.askopenfilename(filetypes=[("KiCad project", "*.kicad_pro *.kicad_sch *.kicad_pcb"), ("All files", "*.*")])
         if not path:
             return
-        cli = find_kicad_cli()
-        exe = Path(cli).with_name("kicad.exe") if cli else None
-        if not exe or not exe.is_file():
+        command = kicad_gui_command(path)
+        if not command:
             messagebox.showinfo("KiCad未検出", "KiCadの起動ファイルが見つかりません。プロジェクトはディスクに保存されています。")
             return
         try:
-            subprocess.Popen([str(exe), path], shell=False)
+            subprocess.Popen(command, shell=False)
             self._log(f"KiCadを起動しました: {path}")
         except OSError as exc:
             messagebox.showerror("KiCad起動エラー", str(exc))

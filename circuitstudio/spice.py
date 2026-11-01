@@ -2,6 +2,7 @@
 
 import math
 import os
+import platform
 import re
 import shutil
 import subprocess
@@ -19,13 +20,24 @@ def find_ngspice():
     configured = os.environ.get("NGSPICE")
     candidates = [configured, shutil.which("ngspice")]
     roots = [Path(__file__).resolve().parents[1] / "tools", Path(sys.executable).resolve().parent / "tools"]
+    if platform.system() == "Windows":
+        for root in roots:
+            for relative in (Path("ngspice-47/bin/ngspice.exe"), Path("ngspice/bin/ngspice.exe"),
+                             Path("Spice64/bin/ngspice.exe")):
+                candidates.append(str(root / relative))
+            if root.is_dir():
+                candidates.extend(str(path) for path in root.glob("**/ngspice.exe"))
+        return next((candidate for candidate in candidates
+                     if candidate and Path(candidate).is_file()), None)
     for root in roots:
-        for relative in (Path("ngspice-47/bin/ngspice.exe"), Path("ngspice/bin/ngspice.exe"),
-                         Path("Spice64/bin/ngspice.exe")):
+        for relative in (Path("ngspice-47/bin/ngspice"), Path("ngspice/bin/ngspice"),
+                         Path("Spice64/bin/ngspice")):
             candidates.append(str(root / relative))
         if root.is_dir():
-            candidates.extend(str(path) for path in root.glob("**/ngspice.exe"))
-    return next((candidate for candidate in candidates if candidate and Path(candidate).is_file()), None)
+            candidates.extend(str(path) for path in root.glob("**/ngspice"))
+    return next((candidate for candidate in candidates
+                 if candidate and Path(candidate).suffix.lower() != ".exe"
+                 and Path(candidate).is_file() and os.access(candidate, os.X_OK)), None)
 
 
 def generate_spice_deck(data):

@@ -5,6 +5,7 @@ import html
 import json
 import math
 import os
+import platform
 import shutil
 import subprocess
 import tempfile
@@ -74,9 +75,13 @@ def _symbol_library_path(library):
         candidates.append(Path(configured) / f"{library}.kicad_sym")
     cli = find_kicad_cli()
     if cli:
-        candidates.append(Path(cli).parent.parent / "share" / "kicad" / "symbols" / f"{library}.kicad_sym")
-    for version in ("10.0", "9.0", "8.0"):
-        candidates.append(Path(os.environ.get("ProgramFiles", r"C:\Program Files")) / "KiCad" / version / "share" / "kicad" / "symbols" / f"{library}.kicad_sym")
+        if platform.system() == "Darwin":
+            candidates.append(Path(cli).resolve().parents[1] / "SharedSupport" / "symbols" / f"{library}.kicad_sym")
+        else:
+            candidates.append(Path(cli).parent.parent / "share" / "kicad" / "symbols" / f"{library}.kicad_sym")
+    if os.name == "nt":
+        for version in ("10.0", "9.0", "8.0"):
+            candidates.append(Path(os.environ.get("ProgramFiles", r"C:\Program Files")) / "KiCad" / version / "share" / "kicad" / "symbols" / f"{library}.kicad_sym")
     return next((path for path in candidates if path.is_file()), None)
 
 
@@ -329,7 +334,8 @@ def generate_preview(data):
 def find_kicad_cli():
     configured = os.environ.get("KICAD_CLI")
     candidates = [configured, shutil.which("kicad-cli")]
-    if os.name == "nt":
+    system = platform.system()
+    if system == "Windows":
         try:
             import winreg
             uninstall = r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
@@ -352,10 +358,33 @@ def find_kicad_cli():
                     continue
         except ImportError:
             pass
-    for version in ("10.0", "9.0", "8.0"):
-        candidates.append(str(Path(os.environ.get("ProgramFiles", r"C:\Program Files")) / "KiCad" / version / "bin" / "kicad-cli.exe"))
-        candidates.append(str(Path(os.environ.get("ProgramFiles", r"C:\Program Files")) / "KiCad" / version / "bin" / "kicad-cli"))
+        for version in ("10.0", "9.0", "8.0"):
+            candidates.append(str(Path(os.environ.get("ProgramFiles", r"C:\Program Files")) / "KiCad" / version / "bin" / "kicad-cli.exe"))
+            candidates.append(str(Path(os.environ.get("ProgramFiles", r"C:\Program Files")) / "KiCad" / version / "bin" / "kicad-cli"))
+    elif system == "Darwin":
+        candidates.extend((
+            "/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli",
+            str(Path.home() / "Applications" / "KiCad" / "KiCad.app" / "Contents" / "MacOS" / "kicad-cli"),
+        ))
     return next((candidate for candidate in candidates if candidate and Path(candidate).is_file()), None)
+
+
+def kicad_gui_command(file_path, cli=None, system=None):
+    """Return a shell-free native KiCad launch command, or None when unavailable."""
+    system = system or platform.system()
+    cli = cli or find_kicad_cli()
+    if not cli:
+        return None
+    path = str(file_path)
+    if system == "Windows":
+        executable = Path(cli).with_name("kicad.exe")
+        return [str(executable), path] if executable.is_file() else None
+    if system == "Darwin":
+        app = next((parent for parent in Path(cli).resolve().parents if parent.suffix == ".app"), None)
+        opener = shutil.which("open")
+        return [opener, "-a", str(app), path] if app and opener else None
+    executable = shutil.which("kicad")
+    return [executable, path] if executable else None
 
 
 def run_native_check(kind, file_path, output_path=None, timeout=90):

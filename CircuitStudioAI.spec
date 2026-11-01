@@ -1,4 +1,5 @@
 from pathlib import Path
+import sys
 
 root = Path(SPECPATH).resolve()
 sample_dsl_files = sorted((root / "samples").glob("*.circuit.yaml"))
@@ -39,3 +40,11 @@ exe = EXE(
     disable_windowed_traceback=False,
 )
 coll = COLLECT(exe, a.binaries, a.datas, strip=False, upx=False, name="CircuitStudioAI")
+if sys.platform == "darwin":
+    app = BUNDLE(
+        coll,
+        name="CircuitStudioAI.app",
+        icon=None,
+        bundle_identifier="com.circuitstudio.ai",
+        info_plist={"LSMinimumSystemVersion": "15.0", "NSHighResolutionCapable": True},
+    )

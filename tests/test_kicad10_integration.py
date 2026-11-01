@@ -21,7 +21,8 @@ class KiCad10CliTests(unittest.TestCase):
         schematic = project / "LED_Indicator.kicad_sch"
         board = project / "LED_Indicator.kicad_pcb"
         before = {path.name for path in project.iterdir()}
-        self.assertEqual(run_native_check("erc", schematic)["status"], "PASS")
+        erc = run_native_check("erc", schematic)
+        self.assertEqual(erc["status"], "PASS", erc.get("report") or erc)
         self.assertEqual(run_native_check("netlist", schematic)["status"], "PASS")
         self.assertEqual(run_native_check("svg", schematic)["status"], "PASS")
         self.assertEqual(run_native_check("drc", board)["status"], "PASS")
@@ -32,7 +33,8 @@ class KiCad10CliTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             result = compile_project(data, temp)
             project = Path(temp) / "LED_Indicator_v2"
-            self.assertEqual(result["native_erc"]["status"], "PASS")
+            self.assertEqual(result["native_erc"]["status"], "PASS",
+                             result["native_erc"].get("report") or result["native_erc"])
             self.assertEqual(result["native_erc"]["violation_total"], 0)
             exports = result["native_exports"]
             self.assertEqual(exports["netlist"]["status"], "PASS")
